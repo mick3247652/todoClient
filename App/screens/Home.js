@@ -1,23 +1,33 @@
 import React, { Component } from "react";
 import { View, Text, FlatList, Button, RefreshControl } from "react-native";
 import { connect } from "react-redux";
+import ActionButton from "react-native-action-button";
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import { Container } from "../components/Container";
 import { connectAlert } from "../components/Alert";
 
 import { loadTodos } from "../actions/todos";
 
-import {Separator, ToDoListItem} from "../components/List"
-import {primaryColor} from '../config/colors'
+import { Separator, ToDoListItem } from "../components/List";
+import { primaryColor } from "../config/colors";
 
 class Home extends Component {
   componentDidMount() {
-    this.handleLoadTodos()
+    this.handleLoadTodos();
   }
 
   handleLoadTodos = () => {
     if (!this.props.todos.isLoaded) this.props.dispatch(loadTodos());
   };
+
+  handleCreateToDo = () => {
+    console.log('navigate to ToDo')
+    this.props.navigation.navigate("ToDo", {
+      title: "Create ToDo",
+      type: "create"
+    });
+  }
 
   render() {
     return (
@@ -25,9 +35,7 @@ class Home extends Component {
         <View style={{ flex: 1 }}>
           <FlatList
             data={this.props.todos.todos}
-            renderItem={({ item }) => (
-              <ToDoListItem {...item}/>
-            )}
+            renderItem={({ item }) => <ToDoListItem {...item} />}
             keyExtractor={item => item._id}
             ItemSeparatorComponent={Separator}
             refreshControl={
@@ -40,7 +48,10 @@ class Home extends Component {
             }
           />
         </View>
-        
+        <ActionButton
+          buttonColor="rgba(231,76,60,1)"
+          onPress={this.handleCreateToDo}
+        />
       </Container>
     );
   }
